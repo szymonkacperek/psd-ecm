@@ -1,0 +1,17 @@
+# TeX files
+*.synctex.gz
+*.toc
+*.out
+*.log
+*.aux
+
+# Debug components
+*.d
+*.su
+*.o
+*.mk
+*.list
+*.map
+
+# Makefile
+*~

@@ -1,0 +1,345 @@
+%% PODSTAWOWE USTAWIENIA DOKUMENTU
+\documentclass[12pt, a4paper, polish]{article}
+%\usepackage[a4paper, lmargin=2.5cm, rmargin=2.5cm, hmargin=2.5cm, bmargin=2.5cm]{geometry}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
+%\geometry{verbose,lmargin=2.5cm,rmargin=2.5cm}
+\usepackage{enumerate}
+% Symbole matematyczne
+\usepackage{latexsym}
+% Formatowanie czcionki
+\usepackage[T1]{fontenc}
+% Formatowanie polskich znaków
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+% Akapit po sekcji
+%\usepackage{indentfirst}
+% Ustawienie nagłówków i stopek
+\usepackage{fancyhdr}
+% Liczba stron
+%\usepackage{lastpage}
+% Kolumny
+%\usepackage{paracol}
+% Czcionka latin modern
+\usepackage{lmodern}
+% Równania matematyczne
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+% Wstawianie grafik
+\usepackage{graphicx}
+%\usepackage[section]{placeins} % Ogarnięcie obrazków
+\usepackage{float}
+\usepackage{subcaption}
+%\usepackage[outdir=./]{epstopdf}
+\usepackage{grffile}
+
+%% ODSTĘPY W WIERSZACH
+\setlength{\parindent}{0.5cm}
+\setlength{\parskip}{0.5cm}
+\linespread{1}
+
+% SZARE TŁO TEKSTU
+\usepackage[most]{tcolorbox}
+\tcbset{
+	frame code={}
+	center title,
+	left=0pt,
+	right=0pt,
+	top=0pt,
+	bottom=0pt,
+	colback=gray!30,
+	colframe=white,
+	width=\dimexpr\textwidth\relax,
+	enlarge left by=0mm,
+	boxsep=5pt,
+	arc=0pt,outer arc=0pt,
+}
+
+% HIPERŁĄCZA SPISU TREŚCI
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\begin{document}
+	\fancyhf{}	% Usunięcie domyślnego stylu numerowania
+	
+	% ********************** TYTUŁ ****************************
+	\noindent\rule{\columnwidth}{0.2pt}
+	\noindent\textsf{\begin{Large}PUT Solar Dynamics\\\end{Large}
+		Opis modułu \textbf{ECM}\\
+		Szymon Kacperek, Konrad Gieregowski, Jan Węgrzynowski \\
+		\rule{\columnwidth}{0.2pt}}
+	
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+	\fancyhead{}
+	\rhead{\thepage}
+	\renewcommand{\headrulewidth}{0pt}%{}
+	\setlength{\footskip}{1mm}
+	
+	%							*****************POCZĄTEK DOKUMENTU*****************
+	%\section{FORMA}
+	%\begin{itemize}
+	%\item Płytka z jednym procesorem 
+	%Program obejmowałby trzy stany w jednym projekcie, przełączające się w zależności od stanów na pinach – przełącznikiem.
+	%
+	%\item Płytka z trzema procesorami
+	%Każdy procesor odpowiadałby za osobny stan samochodu. Koncept ten ma na celu wyeliminowanie błędów mogących powstać podczas pracy samochodu - np. podczas jazdy włączy się tryb parkowania w wyniku błędu (o ile w ogóle jest to możliwe - kwestia do skonsultowania z kimś kompetentnym). Problemem w tym rozwiązaniu może być czas przełączania, który może stworzyć zamieszanie w elektronice. Przełączanie następowałoby również za pomocą przełącznika.
+	%\end{itemize}
+	
+	\section{WPROWADZENIE}
+	Moduł kreowany jest jako jednostka centralna samochodu. Ma za zadanie sterować przepływem danych z sieci CAN, obsługiwać wejścia oraz wyjścia, przesyłać dane do komputera głównego.
+	
+	ECM zasilany będzie z dodatkowego akumulatora - z intencją włączenia 24/7.
+	\section{NIEZBĘDNE FUNKCJONALNOŚCI}
+	\subsection{Obsługa wejść}
+	\begin{description}
+		\item[Sterownik świateł] 15 wejść obejmuje wszystkie funkcjonalności samochodu - otwarte drzwi/światła i inne kwestie informacyjne:
+		\begin{itemize}
+			\item czujniki otwartych drzwi;
+			\item świateł awaryjnych;
+			\item stacyjka do włączania/wyłączania samochodu;
+			\item hamulec ręczny.		
+		\end{itemize}
+	\end{description}
+	
+	\subsection{Magistrala CAN, zapis oraz przesył danych}
+	Moduł umożliwiał będzie przepływ danych między obiema sieciami oraz przesyłał je do komputera głównego po SPI/CAN/USB. 
+	
+	\subsection{Obsługa wyjść}   
+	\begin{description}
+		\item[Quad High Side driver] 9 wyjść;
+	\end{description}
+	
+	\subsection{Pomiar prądów wychodzących z driverów}
+	
+	
+	\subsection{Możliwość awaryjnego odłączenia akumulatora}
+	W przypadku kolizji bądź innych błędów moduł \textit{ECM} powinien mieć możliwość odłączenia głównej baterii. Kolizja oceniana będzie na podstawie danych z akcelerometru.
+	
+	\section{FUNKCJONALNOŚCI DRUGORZĘDNE}
+	\subsection{Zapis danych z sieci na karcie microSD}
+	Według FatFS.
+	
+	\subsection{Analogowe czujniki}
+	Czujniki podłączone pod sieć CAN.
+	
+\section{PERYFERIA}
+\subsection{USART1}
+Do debugowania. 
+
+\subsection{USART2}
+Do wykorzystania Bluetooth Low Energy.
+
+\subsection{SDIO FATFS + DMA}
+Zapis danych z CAN z użyciem DMA. Obecny pin CARD\_DETECT. 
+	
+	
+	
+	
+	%\section{ZAPIS DANYCH}
+	%ECM  powinien kolekcjonować dane, robiąc przebieg informacji w samochodzie w razie awarii, żeby można było zdiagnozować przyczynę powstania błędu.
+	%\begin{enumerate}
+	%\item Dane z sieci CAN. ECM powinien zapisywać dane z sieci CAN na karcie microSD. W tym celu płytka winna zostać wyposażona w odpowiednie interfejsy i slot który zapewni, że karta nie wypadnie podczas jazdy.
+	%\item Dane z czujników. Oczujnikowanie samochodu powinno obejmować:\\
+	%• Czujnik ABS \\
+	%• ESP \\
+	%• Zawieszenie korekcja \\
+	%• Czujnik drzwi \\
+	%• Czujniki hamulca, ręcznego – Paweł Czaja?\\
+	%• Odkręcanie manetek - zrobione\\
+	%• Kąt nachylenia świateł – do potwierdzenia – trwają rozmowy z nadwoziem, ogarnia to Marcin Miazga\\
+	%• Czujnik temperatury zewnętrznej (np. PT100 bez obudowy)\\
+	%• Crash sensor (np. akcelerometr)\\
+	%Wszystkie dane mogą również trafiać na kartę SD.
+	%\item Dane pozostałych modułów. Autorzy pozostałych projektów powinni zadbać o zapis logów z ich urządzeń, zwłaszcza danych które nie będą wysyłane poprzez sieć CAN.
+	%\end{enumerate}
+	%
+	%\section{STEROWANIE PROCESAMI W SAMOCHODZIE}
+	%Przełączanie między stanami samochodu zachodzić będzie za pomocą kluczyka lub klasycznego przełącznika. Stan parkowania byłby stanem domyślnym, następnie istniałyby dwie możliwości: I - stan jazdy, włączany przełącznikiem, II - stan ładowania, włączany automatycznie po podłączeniu ładowarki. Po przełączeniu, można opóźnić proces o 1 ms, w celu uniknięcia występowania dłuższego stanu przejściowego pomiędzy przejściem przełącznika z pozycji na pozycję.
+	%Urządzenia domyślnie uruchamiają się w trybie PRE-OPERATIONAL.
+	%\subsection{Stany urządzeń }
+	%Kontrola nad stanami urządzeń zostaje w mocy ECM, wysyłając odpowiednie informacje po magistrali CAN.\\
+	%1. OPERATIONAL - stan normalnego działania, z zezwoleniem na pracę;\\
+	%2. PRE-OPERATIONAL - stan wstępnego działania, wysłanie wstępnych danych - stan ma służyć do monitorowania urządzeń, czy nie występują błędy, które wymagałyby zaprzestania pracy urządzenia oraz poinformowania użytkownika;\\
+	%3. STOPPED - zatrzymanie pracy urządzenia, pozostawiając włączone peryferium CAN;\\
+	%4. RESET APPLICATION - zresetowanie procesora sterującego, włącznie z resetem komunikacji;\\
+	%5. RESET COMMUNICATION - zresetowanie peryferium CAN w urządzeniu, z zachowaniem normalnych warunków pracy.\\
+	%\subsection{Urządzenia}
+	%W przypadku kontroli działania samochodu w każdym ze stanów warto przeanalizować, jak każdy układ elektryczny (urządzenia i czujniki), powinien się zachować, osobno. W samochodzie obecne będą układy:\\
+	%a. Ładowarka\\
+	%b. MPPT\\
+	%Dobrze by było, gdyby MPPT załączało się samoczynnie, komunikując z BMS odnośnie ładowania we wszystkich trybach samochodu. Tu już musi się dogadać Konrad z Jarem.
+	%c. Akumulatory\\
+	%d. Balanser\\
+	%e. Dashboard\\
+	%W trybie PRE-OPERATIONAL zasilony zostaje układ z diodami sygnalizującymi błąd i wyświetlacz, na którym widoczny będzie kod błędu z ewentualnym krótkim opisem.
+	%f. ECM\\
+	%g. Komputer główny\\
+	%h. Lampy\\
+	%i. Manetki\\
+	%j. Napęd – falowniki i silniki\\
+	%k. Panele fotowoltaiczne\\
+	%l. Pedały\\
+	%m. Crash sensor\\
+	%n. Czujniki temperatury\\	
+	%o. Czujniki hamulców
+	%
+	%\section{OPIS TRYBÓW PRACY SAMOCHODU}
+	%\subsection{Tryb parkowania}
+	%Podczas stanu zaparkowania, wszystkie urządzenia powinny być wyłączone, poza ECM oraz BMS. Zasilane są one z Supplemental battery 12V. Winna zostać załatwiona tylko kwestia ładowania poprzez panele fotowoltaiczne. Tutaj moduł MPPT będzie kierował całą pracą – więc decyzyjność w sprawie ładowania pozostawiona zostanie jemu oraz BMS, który będzie znał stan naładowania baterii oraz kontrolował proces ładowania. 
+	%W przypadku, gdy MPPT nie wyśle informacji o możliwości ładowania pojazdu, moduł powinien być w trybie uśpienia pobierając jak najmniejszą liczbę energii. Kwestie:\\
+	%a. Czy podczas nocy jest sens, żeby moduł pozostawał w trybie uśpienia pobierając jakąkolwiek energię? Z jakiego źródła będzie zasilany?
+	%W tym wypadku warto by pochylić się nad kwestią zasilania modułu. ECM będzie miał zegarek, pokazujący godziny i w zależności od nich może włączać lub wyłączać MPPT. Jednakże, czy nie warto zostawić tego modułu włączonego cały czas, bo prąd pobierania w trybie uśpienia będzie tak niski, że można pominąć jego wartość? Ładowanie baterii może odbyć się dopiero wyzwoleniu przerwania o rozsądnej ilości prądu generowanego przez panele. Tutaj należy odpytać BMS, czy warto ładować akumulator. Włączany jest poprzez ustawienie przełącznika w tryb parkowania.Odpowiedzi układów:
+	%\begin{enumerate}[a)]
+	%\item Ładowarka\\
+	%W stanie parkowania ładowarka powinna być wyłączona.
+	%\item MPPT\\
+	%Moduły MPPT winny pracować w zależności od zezwoleń BMS. Powinny jednakże być uruchomione, najlepiej w stanie oszczędzania energii. Tutaj o kwestie trzeba dopytać Jarka
+	%\item Akumulatory\\
+	%W tym stanie samochodu akumulator główny powinien być odłączony. Włączony jest natomiast akumulator Supplemental Battery 12 V.
+	%\item Balanser\\
+	%Układ BMS powinien zostać włączony, monitorując stan baterii w razie awarii oraz mieć możliwość zarządzania głównymi stycznikami w razie potrzeby ich użycia.
+	%\item Dashboard\\
+	%Winien zostać wyłączony.
+	%\item ECM\\
+	%Moduł kabinowy powinien pracować z jak najniższym zużyciem energii, odłączając zbędne układy. Winna zostać zachowana minimalna funkcjonalność, zwłaszcza gotowość na włączenie samochodu w inny tryb oraz zachować możliwość zarządzania głównymi stycznikami w razie awarii, bądź też uderzenia przez inny obiekt podczas postoju.
+	%\item Lampy\\
+	%Domyślnie powinny zostać wyłączone, jednakże możliwość zapalenia wszystkich rodzajów świateł poza światłami stopu powinna zostać – zwłaszcza światła awaryjne, lecz także pozostałe w razie potrzeby.
+	%\item Manetki\\
+	%Powinny dalej mieć możliwość sterowania światłami – tryb oszczędny, czy zwykłe zasilanie?
+	%\item Napęd – falowniki i silniki\\
+	%Silniki i falowniki powinny zostać wyłączone. Chyba, że z kwestii bezpieczeństwa falowniki powinny dalej monitorować stan silników?
+	%Jednakże powinna zostać zachowana ostrożność i silniki powinny być odcięte fizycznie np. za pomocą stycznika, żeby nie istniała możliwość ich przypadkowego uruchomienia.
+	%\item Panele fotowoltaiczne\\
+	%Panele najwidoczniej nie mają wyraźnego wpływu, chyba niczego nie są w stanie zmienić.
+	%\item Pedały\\
+	%
+	%\item Crash sensor\\
+	%Czujnik powinien być zasilany bezustannie, monitorując przyspieszenia w każdej z osi i na tej podstawie uruchamiać procedurę awaryjną, w razie potrzeby. Powinien zostać umieszczony w miejscu, gdzie samochód będzie najmniej podatny na zniszczenie, żeby nie został zniszczony w momencie uderzenia. Dobrze by było rozmieścić ich kilka sztuk, w każdym punkcie obwodu samochodu.
+	%\item Czujniki temperatury	\\
+	%Zdecydowanie temperatura baterii powinna być cały czas monitorowana – tu w zależności od tego, czy BMS będzie miał taką możliwość. Monitorowanie temperatury na zewnątrz i wewnątrz kabiny nie wydaje się konieczne w ogóle – można zrezygnować z tego pomysłu, chyba że znajdzie się uzasadnienie.
+	%\item Czujniki hamulców\\
+	%W stanie parkowania nie ma konieczności informowania światłem stopu o rozpoczęciu hamowania. Bez wspomagania, chyba układ hydrauliczny w ogóle nie będzie działać.
+	%\end{enumerate}
+	%
+	%\subsection{Tryb jazdy}
+	%Włączany jest poprzez ustawienie przełącznika w tryb jazdy.\\
+	%a. Ładowarka\\
+	%Odłączona. Najlepiej do takiego stopnia, żeby zużywała najmniej energii.\\
+	%b. MPPT\\
+	%Włączone. Koordynacja pracy z BMS odnośnie zezwolenia ładowania.\\
+	%c. Akumulatory\\
+	%Włączony główny akumulator. Czy akumulator Supplemental jest dalej konieczny? Tu trzeba by dbać o jego ładowanie. Co będzie odpowiedzialne za ładowanie akumulatora pomocniczego?\\
+	%d. Balanser\\
+	%Włączony.\\
+	%e. Dashboard\\
+	%Włączona pełna funkcjonalność.\\
+	%f. ECM\\
+	%Włączona pełna funkcjonalność.\\
+	%g. Lampy\\
+	%Włączona pełna funkcjonalność.\\
+	%h. Manetki\\
+	%Włączona pełna funkcjonalność.\\
+	%i. Napęd – falowniki i silniki\\
+	%Włączona pełna funkcjonalność.\\
+	%j. Panele fotowoltaiczne\\
+	%Włączona pełna funkcjonalność.\\
+	%k. Pedały\\
+	%
+	%l. Crash sensor\\
+	%Włączona pełna funkcjonalność. Powinny być zasilane 24/7.\\
+	%m. Czujniki temperatury	\\
+	%Włączona pełna funkcjonalność.\\
+	%n. Czujniki hamulców\\
+	%Włączona pełna funkcjonalność.
+	%
+	%\subsection{Tryb ładowania}
+	%Tryb włączany jest automatycznie po podłączeniu ładowarki oraz wyłączany po odłączeniu ładowarki. W jaki sposób, jeszcze nie wiem – wstępnie można uczulić ECM na odczyt ramek danych od ładowarki – jeśli się pojawią, wówczas będzie wiadomo że ładowarka została zasilona 230 V. Alternatywnie można wyzwolić przerwanie na którymś z pinów ECM – skorelować to z gniazdem ładowania, jakimś czujnikiem lub po prostu wyzwoleniem stanu niskiego lub wysokiego.\\
+	%a. Ładowarka\\
+	%Włączona pełna funkcjonalność.\\
+	%b. MPPT\\
+	%Włączona pełna funkcjonalność.
+	%c. Akumulatory\\
+	%d. Balanser\\
+	%e. Dashboard\\
+	%f. ECM\\
+	%g. Lampy\\
+	%h. Manetki\\
+	%i. Napęd – falowniki i silniki\\
+	%j. Panele fotowoltaiczne\\
+	%k. Pedały\\
+	%l. Crash sensor\\
+	%m. Czujniki temperatury	\\
+	%n. Czujniki hamulców\\
+	%
+	%\section{OBSŁUGA BŁĘDÓW}
+	%Błędy obsługiwane będą w zależności od urządzenia i rodzaju błędu. Przewidziane jest utworzenie aplikacji testującej, wysyłającej ramki każdego z funkcji standardu CANopen do urządzenia docelowego. Błędy wyświetlane będą w zależności od kategorii i trybu samochodu, na dashboard i/lub na wyświetlaczu komputera głównego, wraz z opisem.
+	%Ten rozdział uzupełniony będzie dopiero po zgromadzeniu wszystkich możliwych błędów, które wystąpią w samochodzie.\\
+	%a. Ładowarka\\\
+	%Możliwe błędy, które sygnalizuje ładowarka za pośrednictwem ramki CAN widoczne są na Rys. 5.1.
+	%
+	%Rysunek 5.1 Błędy sygnalizowane w ramce danych CAN przez ładowarkę
+	%Zadaniem ECM w przypadku wystąpienia tych błędów będzie ich zasygnalizowanie na dashboard. Ewentualna naprawa może nastąpić poprzez modyfikację parametrów ładowania, za pośrednictwem komputera głównego z aplikacją okienkową. W przypadku błędów Bit0, Bit3 oraz Bit4 konieczna będzie reakcja sprzętowa, serwisowanie samochodu.\\
+	%b. MPPT\\
+	%c. Akumulatory\\
+	%d. Balanser\\
+	%Błędów może być kilka: \\
+	%• over voltage – coś do zbicia napięcia, rozładowanie?\\
+	%• Undervoltage – wyświetlenie informacji o potrzebie ładowania? \\
+	%• over current – zmniejszenie zużycia energii? \\
+	%• over temperaturę – wymuszenie postoju, ewentualnie uruchomienie dodatkowego chłodzenia? \\
+	%• under temperature – w jaki sposób możemy ogrzać baterie?\\
+	%Każdy z nich to są już poważne errory że trzeba coś zrobić już konkretnego. Skoro jest ich 5 to jeszcze może się jakieś wymyśli ale 8 bitow wystarczy. Czyli bajt z informacjami o błędach będzie wyglądać tak 0b00000000 jeśli nie będzie żadnego błędu a tak: 0b00010000 gdy np będzie overvoltage. 
+	%e. Dashboard\\
+	%f. ECM\\
+	%Jednym z błędów ECM może być nieudana zmiana trybów pracy samochodu.
+	%g. Komputer główny\\
+	%h. Lampy\\
+	%Kontroler świateł monitoruje wartość prądu i będzie informował o zbyt dużym/niskim prądzie.
+	%i. Manetki\\
+	%j. Napęd – falowniki i silniki\\
+	%Tutejsze błędy będą prawdopodobnie informować również o nadmiernych lub zbyt niskich napięciach, prądach i temperaturach. Czy coś ma się tyczyć obrotów?
+	%k. Panele fotowoltaiczne\\
+	%l. Pedały\\
+	%m. Crash sensor\\
+	%W jaki sposób przewidzieć awarię czujnika? Może być monitorowanie jego odczytów. Jeśli nie pojawią się dłużej niż 1-2s, można uznać że czujnik jest zepsuty?
+	%n. Czujniki temperatury	\\
+	%To samo. W jaki sposób przewidzieć awarię czujnika? Może być monitorowanie jego odczytów. Jeśli nie pojawią się dłużej niż 1-2s, można uznać że czujnik jest zepsuty?
+	%o. Czujniki hamulców\\
+	%To samo. W jaki sposób przewidzieć awarię czujnika? Może być monitorowanie jego odczytów. Jeśli nie pojawią się dłużej niż 1-2s, można uznać że czujnik jest zepsuty?
+	%
+	%\section{ALGORYTM}
+	%Po włączeniu do zasilania sprawdzane są aktualne pozycje przełącznika (lub kluczyków) oraz ładowarki.
+	%Każde urządzenie skonfigurowane będzie tak, aby można było modyfikować jego parametry zdalnie, włączając się w sieć CAN przez odpowiednie złącze lub przez komputer główny z odpowiednią aplikacją.
+	%\subsection{Tryb jazdy}
+	%a. Inicjalizacja\\
+	%Wszystkie urządzenia zostają włączone w stan PRE-OPERATIONAL. Ma to na celu sprawdzenie błędów, które mogą się pojawić w momencie uruchomienia urządzeń. Zostanie dodane opóźnienie 1s, żeby wszystkie wiadomości zdążyły trafić do ECM, po czym następuje zgoda na inicjalizację stanu OPERATIONAL.
+	%b. Pętla główna\\
+	%Jeśli nie wystąpią żadne  błędy, następuje ustawienie stanu OPERATIONAL oraz wejście programu w pętlę główną. W jej przebiegu gromadzone są dane z sieci i zapisywane na karcie SD, przesyłane do komputera głównego za pośrednictwem SPI oraz obsługa ewentualnych błędów, które wyzwalać będą przerwanie, przerywając pętle główną do funkcji obsługującej zdarzenia.
+	%c. Przerwania\\
+	%\subsection{Tryb parkowania}
+	%
+	%\subsection{Tryb ładowania}
+	%Tryb jest włączany po podpięciu ładowarki do samochodu. Ładowarka wysyła informacje co 1s z informacjami na temat ładowania – o ewentualnych błędach itp. 
+	%a. Inicjalizacja\\
+	%Następuje wyłączenie wszystkich urządzeń poza dashboard
+	%b. Pętla główna\\
+	%Zawierać będzie transfer danych do dashboard, ukazując aktualne informacje o ładowaniu baterii – pochodzące od BMS oraz ładowarki.
+	%\subsection{Tryb ładowania MPPT}
+	%Tryb ten może współistnieć ze wszystkimi trybami pracy samochodu, zwiększając efektywność podczas zwykłego ładowania, jak i podczas jazdy oraz parkowania. Uruchamia on transfer danych do dashboard, ukazujący że ładowanie MPPT jest aktywne oraz procent naładowania baterii.
+	%a. Ciało funkcji\\
+	%Włączenie (jeśli to konieczne) dashboard oraz odbiór danych od MPPT. W przypadku braku uzyskiwania informacji przez określoną ilość czasu (np. 5s), tryb zostaje wyłączony.
+	%
+	%\section{PYTANIA}
+	%- Uzupełnienie błędów w samochodzie\\
+	%- Jak zostanie załatwiona kwestia regulacji dopływu powietrza do kabiny kierowcy?\\
+	%- Czy bateria może być ładowana cały czas przez moduły MPPT? Czy nie będzie to wpływać negatywnie na jej żywotność?\\
+	%- Czy MPPT może pracować w trybie uśpienia? Ile energii wówczas by pobierało - pomijalnie mało?
+\end{document}

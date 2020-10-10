@@ -1,8 +1,14 @@
 #MicroXplorer Configuration settings - do not modify
+<<<<<<< HEAD:PSD_ECM.ioc
 CAN1.BS1=CAN_BS1_13TQ
 CAN1.BS2=CAN_BS2_6TQ
 CAN1.CalculateTimeQuantum=500.0
 CAN1.IPParameters=CalculateTimeQuantum,Prescaler,BS1,BS2
+=======
+CAN1.BS1=CAN_BS1_6TQ
+CAN1.CalculateTimeQuantum=500.0
+CAN1.IPParameters=CalculateTimeQuantum,Prescaler,BS1
+>>>>>>> release/v0.1.0:PSD_ECM_F407VGT6_1.0.ioc
 CAN1.Prescaler=21
 CAN2.BS1=CAN_BS1_13TQ
 CAN2.BS2=CAN_BS2_2TQ
@@ -73,6 +79,7 @@ PB12.Signal=CAN2_RX
 PB13.Mode=Slave
 PB13.Signal=CAN2_TX
 PC13-ANTI_TAMP.GPIOParameters=GPIO_Label
+<<<<<<< HEAD:PSD_ECM.ioc
 PC13-ANTI_TAMP.GPIO_Label=LED1
 PC13-ANTI_TAMP.Locked=true
 PC13-ANTI_TAMP.Signal=GPIO_Output
@@ -82,6 +89,17 @@ PC14-OSC32_IN.Locked=true
 PC14-OSC32_IN.Signal=GPIO_Output
 PC15-OSC32_OUT.GPIOParameters=GPIO_Label
 PC15-OSC32_OUT.GPIO_Label=LED3
+=======
+PC13-ANTI_TAMP.GPIO_Label=LED_D4
+PC13-ANTI_TAMP.Locked=true
+PC13-ANTI_TAMP.Signal=GPIO_Output
+PC14-OSC32_IN.GPIOParameters=GPIO_Label
+PC14-OSC32_IN.GPIO_Label=LED_D5
+PC14-OSC32_IN.Locked=true
+PC14-OSC32_IN.Signal=GPIO_Output
+PC15-OSC32_OUT.GPIOParameters=GPIO_Label
+PC15-OSC32_OUT.GPIO_Label=LED_D6
+>>>>>>> release/v0.1.0:PSD_ECM_F407VGT6_1.0.ioc
 PC15-OSC32_OUT.Locked=true
 PC15-OSC32_OUT.Signal=GPIO_Output
 PH0-OSC_IN.Mode=HSE-External-Oscillator

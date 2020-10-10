@@ -46,8 +46,13 @@ void MX_CAN1_Init(void)
   hcan1.Init.Prescaler = 21;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
+<<<<<<< HEAD
   hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_6TQ;
+=======
+  hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
+>>>>>>> release/v0.1.0
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
@@ -374,7 +379,11 @@ void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 			can_rx_frame_template.rx_data[i] = can_rx_data[i];
 		}
 	} else {
+<<<<<<< HEAD
 		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+=======
+		HAL_GPIO_WritePin(LED_D4_GPIO_Port, LED_D4_Pin, GPIO_PIN_SET);
+>>>>>>> release/v0.1.0
 	}
 
 	if (HAL_CAN_AddTxMessage(&hcanx, &can_rx_frame_template.tx_header,

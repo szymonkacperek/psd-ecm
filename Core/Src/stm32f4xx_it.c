@@ -250,7 +250,8 @@ void TIM1_UP_TIM10_IRQHandler(void)
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
 	CanSendSync(CAN_HIGH_SPEED);
-	CanSendSync(CAN_LOW_SPEED);
+//	CanSendSync(CAN_LOW_SPEED);
+	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }

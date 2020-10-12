@@ -18,6 +18,7 @@
 #include "main.h"
 #include "can.h"
 #include "tim.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -27,6 +28,7 @@
  PRIVATE INCLUDES
 ************************************************************************************************/
 #include "canopen_object_dict.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -96,6 +98,7 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_TIM10_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
 	/************************************************************************************************
@@ -119,12 +122,24 @@ int main(void)
 	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id);
 	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id);
 
+	/************************************************************************************************
+	 USB
+	 ************************************************************************************************/
+	uint8_t DataToSend[40];
+	uint8_t MessageCounter = 0;
+	uint8_t MessageLength = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_Delay(500);
+	  ++MessageCounter;
+	  MessageLength = sprintf(DataToSend, "Message no. ", MessageCounter);
+	  CDC_Transmit_HS(DataToSend, MessageLength);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

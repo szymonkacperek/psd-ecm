@@ -113,14 +113,14 @@ int main(void)
 	/************************************************************************************************
 	 TURNING ON THE MODULES
 	 ************************************************************************************************/
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id);
 
 	/************************************************************************************************
 	 USB
@@ -139,6 +139,7 @@ int main(void)
 	  ++MessageCounter;
 	  MessageLength = sprintf(DataToSend, "Message no. ", MessageCounter);
 	  CDC_Transmit_HS(DataToSend, MessageLength);
+	  HAL_GPIO_TogglePin(LED_D6_GPIO_Port, LED_D6_Pin);
 
     /* USER CODE END WHILE */
 

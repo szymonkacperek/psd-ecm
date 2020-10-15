@@ -250,10 +250,10 @@ void TIM1_UP_TIM10_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim10);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
-	CanSendSync(CAN_HIGH_SPEED);
-	HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
-	CanSendSync(CAN_LOW_SPEED);
-	HAL_GPIO_TogglePin(LED_D5_GPIO_Port, LED_D5_Pin);
+//	CanSendSync(CAN_HIGH_SPEED);
+//	HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
+//	CanSendSync(CAN_LOW_SPEED);
+//	HAL_GPIO_TogglePin(LED_D5_GPIO_Port, LED_D5_Pin);
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }
@@ -296,7 +296,7 @@ void OTG_HS_IRQHandler(void)
   /* USER CODE END OTG_HS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_IRQn 1 */
-
+//HAL_GPIO_TogglePin(LED_D6_GPIO_Port, LED_D6_Pin);
   /* USER CODE END OTG_HS_IRQn 1 */
 }
 

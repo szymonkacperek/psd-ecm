@@ -9,10 +9,10 @@
   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                             www.st.com/SLA0044
   *
   ******************************************************************************
   */
@@ -21,12 +21,14 @@
 #include "can.h"
 
 /* USER CODE BEGIN 0 */
+#include "usbd_cdc_if.h"
 #include "canopen_object_dict.h"
 
 /************************************************************************************************
  GLOBAL VARIABLES
  ************************************************************************************************/
 CanDataFrameInit can_frame_template;
+CanDataFrameInit *p_can_frame_template = &can_frame_template;
 CAN_FilterTypeDef can_filter_template;
 CAN_RxHeaderTypeDef can_rx_header;
 uint8_t can_rx_data[8];
@@ -46,13 +48,8 @@ void MX_CAN1_Init(void)
   hcan1.Init.Prescaler = 21;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-<<<<<<< HEAD
-  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_6TQ;
-=======
   hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
->>>>>>> release/v0.1.0
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
@@ -118,6 +115,8 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* CAN1 interrupt Init */
+    HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
     HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
     HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
@@ -182,6 +181,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
 
     /* CAN1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
     HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
     HAL_NVIC_DisableIRQ(CAN1_RX1_IRQn);
   /* USER CODE BEGIN CAN1_MspDeInit 1 */
@@ -270,40 +270,41 @@ void CanConfigFilter(CAN_HandleTypeDef hcanx, uint8_t can_filter_bank,
 }
 
 // Send CANopen SYNC data frame
-void CanSendSync(CAN_HandleTypeDef hcanx) {
-	can_frame_template.tx_header.StdId = 0x080;
-	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
-	can_frame_template.tx_header.IDE = CAN_ID_STD;
-	can_frame_template.tx_header.DLC = 0;
-	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template) {
+	can_frame_template->tx_header.StdId = 0x080;
+	can_frame_template->tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template->tx_header.IDE = CAN_ID_STD;
+	can_frame_template->tx_header.DLC = 0;
+	can_frame_template->tx_header.TransmitGlobalTime = DISABLE;
 
-	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template.tx_header,
-			can_frame_template.tx_data, &can_tx_mailbox) != HAL_OK) {
+	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template->tx_header,
+			can_frame_template->tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
-
-	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 
 }
 
 // Send CANopen NMT data frame
-void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id) {
-	can_frame_template.tx_header.StdId = 0x000;
-	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
-	can_frame_template.tx_header.IDE = CAN_ID_STD;
-	can_frame_template.tx_header.DLC = 2;
-	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id,
+		CanDataFrameInit *can_frame_template) {
+	can_frame_template->tx_header.StdId = 0x000;
+	can_frame_template->tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template->tx_header.IDE = CAN_ID_STD;
+	can_frame_template->tx_header.DLC = 2;
+	can_frame_template->tx_header.TransmitGlobalTime = DISABLE;
 
-	can_frame_template.tx_data[0] = state;
-	can_frame_template.tx_data[1] = node_id;
+	can_frame_template->tx_data[0] = state;
+	can_frame_template->tx_data[1] = node_id;
 
-	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template.tx_header,
-			can_frame_template.tx_data, &can_tx_mailbox) != HAL_OK) {
+	UsbTransfer(can_frame_template);
+
+	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template->tx_header,
+			can_frame_template->tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
-
-	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 
 }
@@ -379,11 +380,7 @@ void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 			can_rx_frame_template.rx_data[i] = can_rx_data[i];
 		}
 	} else {
-<<<<<<< HEAD
-		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-=======
-		HAL_GPIO_WritePin(LED_D4_GPIO_Port, LED_D4_Pin, GPIO_PIN_SET);
->>>>>>> release/v0.1.0
+		HAL_GPIO_TogglePin(LED_D6_GPIO_Port, LED_D6_Pin);
 	}
 
 	if (HAL_CAN_AddTxMessage(&hcanx, &can_rx_frame_template.tx_header,

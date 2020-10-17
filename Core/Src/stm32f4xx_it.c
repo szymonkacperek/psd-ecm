@@ -20,6 +20,7 @@
  ************************************************************************************************/
 #include "can.h"
 #include "canopen_object_dict.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -44,9 +45,13 @@
 /************************************************************************************************
  VARIABLES
  ************************************************************************************************/
-extern CAN_RxHeaderTypeDef can_rx_header;
-extern uint8_t can_rx_data[8];
-extern CanDataFrameInit can_rx_frame_template;
+//extern CAN_RxHeaderTypeDef can_rx_header;
+//extern uint8_t can_rx_data[8];
+//extern CanDataFrameInit can_rx_frame_template;
+//extern CanDataFrameInit can_frame_template;
+//uint8_t DataToSend[80];
+//extern CanDataFrameInit *p_can_frame_template;
+
 
 /* USER CODE END PV */
 
@@ -206,6 +211,21 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles CAN1 TX interrupts.
+  */
+void CAN1_TX_IRQHandler(void)
+{
+  /* USER CODE BEGIN CAN1_TX_IRQn 0 */
+
+  /* USER CODE END CAN1_TX_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan1);
+  /* USER CODE BEGIN CAN1_TX_IRQn 1 */
+  	UsbTransfer(&can_frame_template);
+
+  /* USER CODE END CAN1_TX_IRQn 1 */
+}
+
+/**
   * @brief This function handles CAN1 RX0 interrupts.
   */
 void CAN1_RX0_IRQHandler(void)
@@ -250,10 +270,10 @@ void TIM1_UP_TIM10_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim10);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
-//	CanSendSync(CAN_HIGH_SPEED);
-//	HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
+	CanSendSync(CAN_HIGH_SPEED, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id, &can_frame_template);
 //	CanSendSync(CAN_LOW_SPEED);
-//	HAL_GPIO_TogglePin(LED_D5_GPIO_Port, LED_D5_Pin);
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }

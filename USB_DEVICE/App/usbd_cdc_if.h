@@ -31,7 +31,7 @@
 #include "usbd_cdc.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "can.h"
 /* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -51,8 +51,8 @@
 /* USER CODE BEGIN EXPORTED_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  40 //2048
-#define APP_TX_DATA_SIZE  40 //2048
+#define APP_RX_DATA_SIZE  40
+#define APP_TX_DATA_SIZE  40
 
 /* USER CODE END EXPORTED_DEFINES */
 
@@ -110,7 +110,7 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
 uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
-//void CDC_ReceiveCallback(uint8_t *buf, uint32_t len);
+void UsbTransfer(CanDataFrameInit *can_frame_template);
 /* USER CODE END EXPORTED_FUNCTIONS */
 
 /**

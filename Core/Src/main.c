@@ -1,18 +1,18 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : ECM Module software
-  * @author			: Szymon Kacperek
-  * @date			: 14/08/2020
-  ******************************************************************************
-  * Code created by me is signed in longer * arrays. Naming is adapted to Google C/C++ Style Guide.
-  *
-  * NOTES
-  * @ 9/09 CAN is set on different pins than on .sch. Set for test purposes.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : ECM Module software
+ * @author			: Szymon Kacperek
+ * @date			: 14/08/2020
+ ******************************************************************************
+ * Code created by me is signed in longer * arrays. Naming is adapted to Google C/C++ Style Guide.
+ *
+ * NOTES
+ * @ 9/09 CAN is set on different pins than on .sch. Set for test purposes.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -26,7 +26,7 @@
 
 /************************************************************************************************
  PRIVATE INCLUDES
-************************************************************************************************/
+ ************************************************************************************************/
 #include "canopen_object_dict.h"
 #include "usbd_cdc_if.h"
 
@@ -63,7 +63,7 @@ void SystemClock_Config(void);
 
 /************************************************************************************************
  PRIVATE VARIABLES
-************************************************************************************************/
+ ************************************************************************************************/
 
 /* USER CODE END 0 */
 
@@ -107,46 +107,36 @@ int main(void)
 	CanopenObjectDictInit();
 	CanConfigFilter(CAN_HIGH_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
 	CanInit(CAN_HIGH_SPEED);
-	CanInit(CAN_LOW_SPEED);
+//	CanInit(CAN_LOW_SPEED);
 	HAL_TIM_Base_Start_IT(&htim10);
 
 	/************************************************************************************************
 	 TURNING ON THE MODULES
 	 ************************************************************************************************/
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id);
-//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id);
-
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id, &can_frame_template);
 	/************************************************************************************************
 	 USB
 	 ************************************************************************************************/
-	uint8_t DataToSend[40];
-	uint8_t MessageCounter = 0;
-	uint8_t MessageLength = 0;
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	  HAL_Delay(500);
-	  ++MessageCounter;
-	  MessageLength = sprintf(DataToSend, "Message no. ", MessageCounter);
-	  CDC_Transmit_HS(DataToSend, MessageLength);
-	  HAL_GPIO_TogglePin(LED_D6_GPIO_Port, LED_D6_Pin);
+	while (1) {
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -204,7 +194,7 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+	/* User can add his own implementation to report the HAL error return state */
 
   /* USER CODE END Error_Handler_Debug */
 }

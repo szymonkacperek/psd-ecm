@@ -64,6 +64,10 @@ void SystemClock_Config(void);
 /************************************************************************************************
  PRIVATE VARIABLES
  ************************************************************************************************/
+uint8_t velocity = 0;
+int counter = 0;
+int increasing = 1;
+int decreasing = 0;
 
 /* USER CODE END 0 */
 
@@ -113,24 +117,55 @@ int main(void)
 	/************************************************************************************************
 	 TURNING ON THE MODULES
 	 ************************************************************************************************/
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id, &can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id,
+			&can_frame_template);
+	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id,
+			&can_frame_template);
 	/************************************************************************************************
 	 USB
 	 ************************************************************************************************/
-
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
+		counter++;
+		if (counter % 20 == 0) {
+
+			if (increasing == 1) {
+				velocity++;
+				if (velocity >= 0x8C) {
+					increasing = 0;
+					decreasing = 1;
+				}
+
+			}
+
+			if (decreasing == 1) {
+				velocity--;
+				if (velocity <= 0x00) {
+					decreasing = 0;
+					increasing = 1;
+				}
+			}
+
+			CanSendTpdo(CAN_HIGH_SPEED, inverter_1.node_id, velocity, &can_frame_template);
+			HAL_Delay(10);
+
+		}
 
     /* USER CODE END WHILE */
 

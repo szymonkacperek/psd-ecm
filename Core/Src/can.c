@@ -48,8 +48,8 @@ void MX_CAN1_Init(void)
   hcan1.Init.Prescaler = 21;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
@@ -310,28 +310,29 @@ void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id,
 }
 
 // Send CANopen TPDO data frame
-void CanSendTpdo(CAN_HandleTypeDef hcanx, int32_t node_id, uint32_t data_1[8]) {
-	can_frame_template.tx_header.StdId = node_id;
-	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
-	can_frame_template.tx_header.IDE = CAN_ID_STD;
-	can_frame_template.tx_header.DLC = 8;
-	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+void CanSendTpdo(CAN_HandleTypeDef hcanx, uint8_t node_id, uint8_t data_1,
+		CanDataFrameInit *can_frame_template) {
+	can_frame_template->tx_header.StdId = node_id;
+	can_frame_template->tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template->tx_header.IDE = CAN_ID_STD;
+	can_frame_template->tx_header.DLC = 8;
+	can_frame_template->tx_header.TransmitGlobalTime = DISABLE;
 
-	can_frame_template.tx_data[0] = data_1[0];
-	can_frame_template.tx_data[1] = data_1[1];
-	can_frame_template.tx_data[2] = data_1[2];
-	can_frame_template.tx_data[3] = data_1[3];
-	can_frame_template.tx_data[4] = data_1[4];
-	can_frame_template.tx_data[5] = data_1[5];
-	can_frame_template.tx_data[6] = data_1[6];
-	can_frame_template.tx_data[7] = data_1[7];
+	can_frame_template->tx_data[0] = 0x1F;
+	can_frame_template->tx_data[1] = 0x23;
+	can_frame_template->tx_data[2] = 0x78;
+	can_frame_template->tx_data[3] = 0xFF;
+	can_frame_template->tx_data[4] = 0x2F;
+	can_frame_template->tx_data[5] = 0x1C;
+	can_frame_template->tx_data[6] = 0x00;
+	can_frame_template->tx_data[7] = data_1;
 
-	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template.tx_header,
-			can_frame_template.tx_data, &can_tx_mailbox) != HAL_OK) {
+	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template->tx_header,
+			can_frame_template->tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
 
-	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan2) != 3) {
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 }
 

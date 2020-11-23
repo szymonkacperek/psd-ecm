@@ -67,7 +67,7 @@
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "PUTSolarDynamics"
 #define USBD_PID_HS     22336
-#define USBD_PRODUCT_STRING_HS     "PSD ECM COM Port"
+#define USBD_PRODUCT_STRING_HS     "PsdEcmComPort"
 #define USBD_CONFIGURATION_STRING_HS     "CDC Config"
 #define USBD_INTERFACE_STRING_HS     "CDC Interface"
 

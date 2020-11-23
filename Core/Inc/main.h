@@ -57,14 +57,47 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define OPTO_INPUT2_Pin GPIO_PIN_2
+#define OPTO_INPUT2_GPIO_Port GPIOE
+#define OPTO_INPUT3_Pin GPIO_PIN_3
+#define OPTO_INPUT3_GPIO_Port GPIOE
+#define OPTO_INPUT4_Pin GPIO_PIN_4
+#define OPTO_INPUT4_GPIO_Port GPIOE
+#define OPTO_INPUT5_Pin GPIO_PIN_5
+#define OPTO_INPUT5_GPIO_Port GPIOE
+#define OPTO_INPUT6_Pin GPIO_PIN_6
+#define OPTO_INPUT6_GPIO_Port GPIOE
 #define LED_D4_Pin GPIO_PIN_13
 #define LED_D4_GPIO_Port GPIOC
 #define LED_D5_Pin GPIO_PIN_14
 #define LED_D5_GPIO_Port GPIOC
 #define LED_D6_Pin GPIO_PIN_15
 #define LED_D6_GPIO_Port GPIOC
+#define OPTO_INPUT15_Pin GPIO_PIN_7
+#define OPTO_INPUT15_GPIO_Port GPIOE
+#define OPTO_INPUT14_Pin GPIO_PIN_8
+#define OPTO_INPUT14_GPIO_Port GPIOE
+#define OPTO_INPUT13_Pin GPIO_PIN_9
+#define OPTO_INPUT13_GPIO_Port GPIOE
+#define OPTO_INPUT12_Pin GPIO_PIN_10
+#define OPTO_INPUT12_GPIO_Port GPIOE
+#define OPTO_INPUT11_Pin GPIO_PIN_11
+#define OPTO_INPUT11_GPIO_Port GPIOE
+#define OPTO_INPUT10_Pin GPIO_PIN_12
+#define OPTO_INPUT10_GPIO_Port GPIOE
+#define OPTO_INPUT9_Pin GPIO_PIN_13
+#define OPTO_INPUT9_GPIO_Port GPIOE
+#define OPTO_INPUT8_Pin GPIO_PIN_14
+#define OPTO_INPUT8_GPIO_Port GPIOE
+#define OPTO_INPUT7_Pin GPIO_PIN_15
+#define OPTO_INPUT7_GPIO_Port GPIOE
 #define CAN1_RS_Pin GPIO_PIN_10
 #define CAN1_RS_GPIO_Port GPIOA
+#define CAN2_RS_Pin GPIO_PIN_7
+#define CAN2_RS_GPIO_Port GPIOB
+#define OPTO_INPUT1_Pin GPIO_PIN_1
+#define OPTO_INPUT1_GPIO_Port GPIOE
+#define OPTO_INPUT1_EXTI_IRQn EXTI1_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

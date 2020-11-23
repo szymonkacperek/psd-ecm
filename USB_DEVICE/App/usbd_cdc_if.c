@@ -35,7 +35,8 @@ static uint8_t lineCoding[7] // 115200bps, 1stop, no parity, 8bit
 = { 0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08 };
 uint8_t message_length = 0;
 uint8_t data_to_send[33];
-uint8_t ReceivedData[40];
+uint8_t uart_data_to_send[33];
+uint8_t usb_received_data[33];
 
 /* USER CODE END PV */
 
@@ -271,9 +272,9 @@ static int8_t CDC_Receive_HS(uint8_t* Buf, uint32_t *Len)
   /* USER CODE BEGIN 11 */
 	USBD_CDC_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
 	USBD_CDC_ReceivePacket(&hUsbDeviceHS);
-	strlcpy(ReceivedData, Buf, &Len + 1);
+	strlcpy(usb_received_data, Buf, &Len + 1);
 
-	if (ReceivedData[0] == '1') {
+	if (usb_received_data[0] == '1') {
 		HAL_GPIO_WritePin(LED_D4_GPIO_Port, LED_D4_Pin, GPIO_PIN_SET);
 	} else {
 		HAL_GPIO_WritePin(LED_D4_GPIO_Port, LED_D4_Pin, GPIO_PIN_RESET);
@@ -332,14 +333,21 @@ static int8_t CDC_TransmitCplt_HS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 void UsbTransfer(CanDataFrameInit *data) {
 	message_length = sprintf(data_to_send,
 			"CAN: [%02X]%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\r",
-			data->tx_header.StdId, data->tx_data[0],
-			data->tx_data[1], data->tx_data[2],
-			data->tx_data[3], data->tx_data[4],
-			data->tx_data[5], data->tx_data[6],
-			data->tx_data[7]);
+			data->tx_header.StdId, data->tx_data[0], data->tx_data[1],
+			data->tx_data[2], data->tx_data[3], data->tx_data[4],
+			data->tx_data[5], data->tx_data[6], data->tx_data[7]);
 	CDC_Transmit_HS(&data_to_send, message_length);
 
 }
+
+void UsbTransferData(uint8_t node_id, uint8_t *data) {
+	message_length = sprintf(uart_data_to_send,
+			"USB: [%02X]%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\r", node_id,
+			data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+	CDC_Transmit_HS(&uart_data_to_send, message_length);
+
+}
+
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

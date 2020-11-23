@@ -105,26 +105,37 @@ int main(void)
 	 CAN PERIPHERIAL AND ITS COMPONENTS
 	 ************************************************************************************************/
 	CanopenObjectDictInit();
-	CanConfigFilter(CAN_HIGH_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
-	CanInit(CAN_HIGH_SPEED);
-//	CanInit(CAN_LOW_SPEED);
+//	CanConfigFilter(CAN_HIGH_SPEED, 1, 0x0000, 0x0000, 0x0000, 0x0000);
+//	CanInit(CAN_HIGH_SPEED);
+
+	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
+	CanInit(CAN_LOW_SPEED);
+
 	HAL_TIM_Base_Start_IT(&htim10);
 
 	/************************************************************************************************
 	 TURNING ON THE MODULES
 	 ************************************************************************************************/
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id, &can_frame_template);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id, &can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id,
+//			&can_frame_template);
+
 	/************************************************************************************************
 	 USB
 	 ************************************************************************************************/
-
 
   /* USER CODE END 2 */
 
@@ -161,9 +172,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
+  RCC_OscInitStruct.PLL.PLLN = 120;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV6;
+  RCC_OscInitStruct.PLL.PLLQ = 5;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -174,10 +185,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }

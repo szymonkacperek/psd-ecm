@@ -40,11 +40,15 @@ extern CAN_HandleTypeDef hcan2;
  *******************************************************************************/
 #define CAN_HIGH_SPEED hcan1
 #define CAN_LOW_SPEED hcan2
+
 #define OPERATIONAL_STATE		0x01
 #define STOPPED_STATE			0x02
 #define PRE_OPERATIONAL_STATE	0x80
 #define RESET_APPLICATION		0x81
 #define RESET_COMMUNICATION		0x82
+
+#define LIGHTS_OFF 0b00000000
+#define LIGHTS_ON 0b00000001
 
 /*******************************************************************************
  DECLARATIONS
@@ -59,7 +63,7 @@ extern CanDataFrameInit can_frame_template;
 
 void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template);
 void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id, CanDataFrameInit *can_frame_template);
-void CanSendTpdo(CAN_HandleTypeDef hcanx, int32_t node_id, uint32_t data1[8]);
+void CanSendTpdo(CAN_HandleTypeDef hcanx, int8_t node_id, uint8_t dlc, uint8_t data_1[8], CanDataFrameInit *can_frame_template);
 void CanSendTpdoTest(CAN_HandleTypeDef hcanx);
 
 void CanInit(CAN_HandleTypeDef hcanx);

@@ -45,11 +45,11 @@ void MX_CAN1_Init(void)
 {
 
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 21;
+  hcan1.Init.Prescaler = 10;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
@@ -67,7 +67,7 @@ void MX_CAN2_Init(void)
 {
 
   hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 21;
+  hcan2.Init.Prescaler = 50;
   hcan2.Init.Mode = CAN_MODE_NORMAL;
   hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan2.Init.TimeSeg1 = CAN_BS1_13TQ;
@@ -150,6 +150,8 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* CAN2 interrupt Init */
+    HAL_NVIC_SetPriority(CAN2_TX_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(CAN2_TX_IRQn);
     HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
     HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 0);
@@ -207,6 +209,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12|GPIO_PIN_13);
 
     /* CAN2 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(CAN2_TX_IRQn);
     HAL_NVIC_DisableIRQ(CAN2_RX0_IRQn);
     HAL_NVIC_DisableIRQ(CAN2_RX1_IRQn);
   /* USER CODE BEGIN CAN2_MspDeInit 1 */
@@ -310,28 +313,28 @@ void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id,
 }
 
 // Send CANopen TPDO data frame
-void CanSendTpdo(CAN_HandleTypeDef hcanx, int32_t node_id, uint32_t data_1[8]) {
-	can_frame_template.tx_header.StdId = node_id;
-	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
-	can_frame_template.tx_header.IDE = CAN_ID_STD;
-	can_frame_template.tx_header.DLC = 8;
-	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+void CanSendTpdo(CAN_HandleTypeDef hcanx, int8_t node_id, uint8_t dlc, uint8_t data1, CanDataFrameInit *can_frame_template) {
+	can_frame_template->tx_header.StdId = node_id;
+	can_frame_template->tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template->tx_header.IDE = CAN_ID_STD;
+	can_frame_template->tx_header.DLC = dlc;
+	can_frame_template->tx_header.TransmitGlobalTime = DISABLE;
 
-	can_frame_template.tx_data[0] = data_1[0];
-	can_frame_template.tx_data[1] = data_1[1];
-	can_frame_template.tx_data[2] = data_1[2];
-	can_frame_template.tx_data[3] = data_1[3];
-	can_frame_template.tx_data[4] = data_1[4];
-	can_frame_template.tx_data[5] = data_1[5];
-	can_frame_template.tx_data[6] = data_1[6];
-	can_frame_template.tx_data[7] = data_1[7];
+	can_frame_template->tx_data[0] = 0x01; //data_1[0];
+	can_frame_template->tx_data[1] = data_1[1];
+	can_frame_template->tx_data[2] = data_1[2];
+	can_frame_template->tx_data[3] = data_1[3];
+	can_frame_template->tx_data[4] = data_1[4];
+	can_frame_template->tx_data[5] = data_1[5];
+	can_frame_template->tx_data[6] = data_1[6];
+	can_frame_template->tx_data[7] = data_1[7];
 
-	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template.tx_header,
-			can_frame_template.tx_data, &can_tx_mailbox) != HAL_OK) {
+	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template->tx_header,
+			can_frame_template->tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
 
-	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan2) != 3) {
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 }
 
@@ -359,7 +362,7 @@ void CanSendTpdoTest(CAN_HandleTypeDef hcanx) {
 		Error_Handler();
 	}
 
-	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 
 }

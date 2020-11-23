@@ -28,10 +28,13 @@
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
+//#include "canopen_object_dict.h"
+#include "can.h"
 
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+void GpioOptoInputsService();
 
 /* USER CODE END Private defines */
 

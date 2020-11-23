@@ -163,7 +163,7 @@ int main(void)
 			}
 
 			CanSendTpdo(CAN_HIGH_SPEED, inverter_1.node_id, velocity, &can_frame_template);
-			HAL_Delay(10);
+			HAL_Delay(117);
 
 		}
 

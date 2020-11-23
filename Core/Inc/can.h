@@ -72,6 +72,8 @@ void CanSaveReceivedData(CAN_HandleTypeDef hcanx);
 void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 		uint32_t receiver_id);
 
+void CanClearDataFrame(CanDataFrameInit *can_frame_template);
+
 /* USER CODE END Private defines */
 
 void MX_CAN1_Init(void);

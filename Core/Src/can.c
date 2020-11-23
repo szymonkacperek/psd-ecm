@@ -284,6 +284,8 @@ void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template) 
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
 
+	CanClearDataFrame(can_frame_template);
+
 }
 
 // Send CANopen NMT data frame
@@ -298,14 +300,13 @@ void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id,
 	can_frame_template->tx_data[0] = state;
 	can_frame_template->tx_data[1] = node_id;
 
-	UsbTransfer(can_frame_template);
-
 	if (HAL_CAN_AddTxMessage(&hcanx, &can_frame_template->tx_header,
 			can_frame_template->tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
+	CanClearDataFrame(can_frame_template);
 
 }
 
@@ -334,6 +335,8 @@ void CanSendTpdo(CAN_HandleTypeDef hcanx, uint8_t node_id, uint8_t data_1,
 
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcanx) != 3) {
 	}
+
+	CanClearDataFrame(can_frame_template);
 }
 
 void CanSendTpdoTest(CAN_HandleTypeDef hcanx) {
@@ -388,6 +391,23 @@ void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 			can_rx_frame_template.tx_data, &can_tx_mailbox) != HAL_OK) {
 		Error_Handler();
 	}
+}
+
+void CanClearDataFrame(CanDataFrameInit *can_frame_template) {
+	can_frame_template->tx_header.StdId = 0x00;
+	can_frame_template->tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template->tx_header.IDE = CAN_ID_STD;
+	can_frame_template->tx_header.DLC = 0;
+	can_frame_template->tx_header.TransmitGlobalTime = DISABLE;
+
+	can_frame_template->tx_data[0] = 0x00;
+	can_frame_template->tx_data[1] = 0x00;
+	can_frame_template->tx_data[2] = 0x00;
+	can_frame_template->tx_data[3] = 0x00;
+	can_frame_template->tx_data[4] = 0x00;
+	can_frame_template->tx_data[5] = 0x00;
+	can_frame_template->tx_data[6] = 0x00;
+	can_frame_template->tx_data[7] = 0x00;
 }
 
 /* USER CODE END 1 */

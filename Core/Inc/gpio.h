@@ -29,7 +29,6 @@
 
 /* USER CODE BEGIN Includes */
 //#include "canopen_object_dict.h"
-#include "can.h"
 
 /* USER CODE END Includes */
 

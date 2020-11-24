@@ -3,13 +3,21 @@
  ******************************************************************************
  * @file           : main.c
  * @brief          : ECM Module software
- * @author			: Szymon Kacperek
- * @date			: 14/08/2020
+ * @author		   : Szymon Kacperek
+ * @mail           : szymonkacperek96@gmail.com
+ * @date		   : 14/08/2020
  ******************************************************************************
  * Code created by me is signed in longer * arrays. Naming is adapted to Google C/C++ Style Guide.
  *
+ ******************************************************************************
  * NOTES
- * @ 9/09 CAN is set on different pins than on .sch. Set for test purposes.
+ * @ 24/11/2020 Perspectives to develop:
+ * - [x] clear every message after being sent in order to CAN data sent over USB be clear;
+ * - [ ] create a ENUM type which would return CAN peripherial state after calling CAN functions;
+ *
+ *
+ *
+ *
  *
  ******************************************************************************
  */
@@ -132,7 +140,6 @@ int main(void)
 //			&can_frame_template);
 //	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id,
 //			&can_frame_template);
-
 	/************************************************************************************************
 	 USB
 	 ************************************************************************************************/

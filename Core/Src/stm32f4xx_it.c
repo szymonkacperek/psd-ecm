@@ -51,8 +51,6 @@
 //extern CanDataFrameInit can_frame_template;
 //uint8_t DataToSend[80];
 //extern CanDataFrameInit *p_can_frame_template;
-
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -220,8 +218,11 @@ void EXTI1_IRQHandler(void)
   /* USER CODE END EXTI1_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
   /* USER CODE BEGIN EXTI1_IRQn 1 */
-	GpioOptoInputsService();
 
+	/************************************************************************************************
+	 OPTO-INPUTS INTERRUPT HANDLING
+	 ************************************************************************************************/
+	GpioOptoInputsService();
 
   /* USER CODE END EXTI1_IRQn 1 */
 }
@@ -236,7 +237,11 @@ void CAN1_TX_IRQHandler(void)
   /* USER CODE END CAN1_TX_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_TX_IRQn 1 */
-  	UsbTransfer(&can_frame_template);
+
+	/************************************************************************************************
+	 CAN_HIGH_SPEED TX INTERRUPT HANDLING
+	 ************************************************************************************************/
+	UsbTransfer(&can_frame_template);
 
   /* USER CODE END CAN1_TX_IRQn 1 */
 }
@@ -253,7 +258,7 @@ void CAN1_RX0_IRQHandler(void)
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
 
 	/************************************************************************************************
-	 RX INTERRUPT HANDLING
+	 CAN_HIGH_SPEED RX INTERRUPT HANDLING
 	 ************************************************************************************************/
 	CanSaveReceivedData(CAN_HIGH_SPEED);
 	CanTransfer(CAN_LOW_SPEED, lights_controller.node_id, dashboard.node_id);
@@ -286,10 +291,15 @@ void TIM1_UP_TIM10_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim10);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
+	/************************************************************************************************
+	 TIMER 10Hz INTERRUPT HANDLING
+	 ************************************************************************************************/
 //	CanSendSync(CAN_HIGH_SPEED, &can_frame_template);
 //	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id, &can_frame_template);
 //	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id, &can_frame_template);
-	CanSendSync(CAN_LOW_SPEED, &can_frame_template);
+//	CanSendSync(CAN_LOW_SPEED, &can_frame_template);
+//	CanSendTpdo(CAN_LOW_SPEED, lights_controller.node_id, 2, 0x01,
+//			&can_frame_template);
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }
@@ -304,6 +314,10 @@ void CAN2_TX_IRQHandler(void)
   /* USER CODE END CAN2_TX_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan2);
   /* USER CODE BEGIN CAN2_TX_IRQn 1 */
+
+	/************************************************************************************************
+	 CAN_LOW_SPEED TX INTERRUPT HANDLING
+	 ************************************************************************************************/
 	UsbTransfer(&can_frame_template);
 
   /* USER CODE END CAN2_TX_IRQn 1 */

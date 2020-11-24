@@ -21,6 +21,7 @@
 #include "gpio.h"
 /* USER CODE BEGIN 0 */
 #include "canopen_object_dict.h"
+#include "can.h"
 
 /* USER CODE END 0 */
 
@@ -62,12 +63,12 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : PEPin PEPin PEPin PEPin
                            PEPin PEPin PEPin PEPin
                            PEPin PEPin PEPin PEPin
-                           PEPin PEPin */
+                           PEPin PEPin PEPin */
   GPIO_InitStruct.Pin = OPTO_INPUT2_Pin|OPTO_INPUT3_Pin|OPTO_INPUT4_Pin|OPTO_INPUT5_Pin
                           |OPTO_INPUT6_Pin|OPTO_INPUT15_Pin|OPTO_INPUT14_Pin|OPTO_INPUT13_Pin
                           |OPTO_INPUT12_Pin|OPTO_INPUT11_Pin|OPTO_INPUT10_Pin|OPTO_INPUT9_Pin
-                          |OPTO_INPUT8_Pin|OPTO_INPUT7_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+                          |OPTO_INPUT8_Pin|OPTO_INPUT7_Pin|OPTO_INPUT1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
@@ -92,12 +93,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(CAN2_RS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = OPTO_INPUT1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(OPTO_INPUT1_GPIO_Port, &GPIO_InitStruct);
-
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI1_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI1_IRQn);
@@ -106,16 +101,92 @@ void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 2 */
 
+/**
+ * @brief: store incoming lights cuff switches and send over can to lights controller
+ *
+ **/
 void GpioOptoInputsService() {
+	/* opto input 1 */
 	if (HAL_GPIO_ReadPin(OPTO_INPUT1_GPIO_Port, OPTO_INPUT1_Pin)
 			== GPIO_PIN_SET) {
-		HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
-		CanSendTpdo(CAN_LOW_SPEED, lights_controller.node_id, 1, 0x01,
-				&can_frame_template);
-//		CanSendTpdoTest(CAN_LOW_SPEED);
-//		UsbTransferData(lights_controller.node_id, 0x01);
-
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x01, 0, 0, 0, 0, 0, 0);
 	}
+
+	/* opto input 2 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT2_GPIO_Port, OPTO_INPUT2_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x02, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 3 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT3_GPIO_Port, OPTO_INPUT3_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x03, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 4 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT4_GPIO_Port, OPTO_INPUT4_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x04, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 5 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT5_GPIO_Port, OPTO_INPUT5_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x05, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 6 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT6_GPIO_Port, OPTO_INPUT6_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x06, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 7 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT7_GPIO_Port, OPTO_INPUT7_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x07, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 8 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT8_GPIO_Port, OPTO_INPUT8_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x08, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 9 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT9_GPIO_Port, OPTO_INPUT9_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x09, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 10 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT10_GPIO_Port, OPTO_INPUT10_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x0A, 0, 0, 0, 0, 0, 0);
+	}
+
+	/* opto input 11 */
+	else if (HAL_GPIO_ReadPin(OPTO_INPUT11_GPIO_Port, OPTO_INPUT11_Pin)
+			== GPIO_PIN_SET) {
+		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
+				&can_frame_template, 2, SDO_UPLOAD, 0x0B, 0, 0, 0, 0, 0, 0);
+	}
+
+	else {
+		HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
+	}
+
 }
 
 /* USER CODE END 2 */

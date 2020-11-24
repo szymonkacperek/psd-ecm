@@ -47,8 +47,8 @@ extern CAN_HandleTypeDef hcan2;
 #define RESET_APPLICATION		0x81
 #define RESET_COMMUNICATION		0x82
 
-#define LIGHTS_OFF 0b00000000
-#define LIGHTS_ON 0b00000001
+#define SDO_UPLOAD   0b00100000
+#define SDO_DOWNLOAD 0b01000000
 
 /*******************************************************************************
  DECLARATIONS
@@ -61,11 +61,7 @@ typedef struct {
 
 extern CanDataFrameInit can_frame_template;
 
-void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template);
-void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id, CanDataFrameInit *can_frame_template);
-void CanSendTpdo(CAN_HandleTypeDef hcanx, int8_t node_id, uint8_t dlc, uint8_t data_1[8], CanDataFrameInit *can_frame_template);
-void CanSendTpdoTest(CAN_HandleTypeDef hcanx);
-
+/* can peripherial initialization */
 void CanInit(CAN_HandleTypeDef hcanx);
 void CanConfigFilter(CAN_HandleTypeDef hcanx, uint8_t can_filter_bank,
 		uint32_t can_filter_id_high, uint32_t can_filter_id_low,
@@ -74,6 +70,21 @@ void CanConfigFilter(CAN_HandleTypeDef hcanx, uint8_t can_filter_bank,
 void CanSaveReceivedData(CAN_HandleTypeDef hcanx);
 void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 		uint32_t receiver_id);
+
+void CanClearDataFrame(CanDataFrameInit *can_frame_template);
+
+/* canopen services */
+void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template);
+void CanSendNmt(CAN_HandleTypeDef hcanx, uint8_t state, uint8_t node_id,
+		CanDataFrameInit *can_frame_template);
+void CanSendPdo(CAN_HandleTypeDef chosen_network, uint8_t frame_pdo_id,
+		uint8_t number_of_bytes, CanDataFrameInit *can_frame_template,
+		uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
+		uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7);
+void CanSendSdo(CAN_HandleTypeDef chosen_network, uint8_t frame_sdo_id,
+		CanDataFrameInit *ptr_can_frame_template, uint8_t number_of_bytes,
+		uint8_t command_byte, uint8_t byte0, uint8_t byte1, uint8_t byte2,
+		uint8_t byte3, uint8_t byte4, uint8_t byte5, uint8_t byte6);
 
 /* USER CODE END Private defines */
 

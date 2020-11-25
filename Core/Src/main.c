@@ -7,13 +7,16 @@
  * @mail           : szymonkacperek96@gmail.com
  * @date		   : 14/08/2020
  ******************************************************************************
- * Code created by me is signed in longer * arrays. Naming is adapted to Google C/C++ Style Guide.
+ * Code created by me is signed in longer * arrays. Naming is adapted to Google C++ Style Guide.
  *
  ******************************************************************************
  * NOTES
  * @ 24/11/2020 Perspectives to develop:
  * - [x] clear every message after being sent in order to CAN data sent over USB be clear;
  * - [ ] create a ENUM type which would return CAN peripherial state after calling CAN functions;
+ * - [ ] allocate memory dynamically in order to build usb data frames;
+ * - [ ] sent usb data in 200-elements array with specified time interval e.g. 30 or 60 Hz;
+ *
  *
  *
  *
@@ -113,11 +116,11 @@ int main(void)
 	 CAN PERIPHERIAL AND ITS COMPONENTS
 	 ************************************************************************************************/
 	CanopenObjectDictInit();
-//	CanConfigFilter(CAN_HIGH_SPEED, 1, 0x0000, 0x0000, 0x0000, 0x0000);
-//	CanInit(CAN_HIGH_SPEED);
+	CanConfigFilter(CAN_HIGH_SPEED, 1, 0x0000, 0x0000, 0x0000, 0x0000);
+	CanInit(CAN_HIGH_SPEED);
 
-	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
-	CanInit(CAN_LOW_SPEED);
+//	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
+//	CanInit(CAN_LOW_SPEED);
 
 	HAL_TIM_Base_Start_IT(&htim10);
 

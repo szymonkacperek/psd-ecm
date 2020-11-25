@@ -56,10 +56,13 @@ extern CAN_HandleTypeDef hcan2;
 typedef struct {
 	uint8_t tx_data[8];
 	CAN_TxHeaderTypeDef tx_header;
+	CAN_RxHeaderTypeDef rx_header;
 	uint8_t rx_data[8];
 } CanDataFrameInit;
 
 extern CanDataFrameInit can_frame_template;
+extern CanDataFrameInit can_rx_frame_template;
+
 
 /* can peripherial initialization */
 void CanInit(CAN_HandleTypeDef hcanx);
@@ -67,7 +70,7 @@ void CanConfigFilter(CAN_HandleTypeDef hcanx, uint8_t can_filter_bank,
 		uint32_t can_filter_id_high, uint32_t can_filter_id_low,
 		uint32_t can_filter_mask_id_high, uint32_t can_filter_mask_id_low);
 
-void CanSaveReceivedData(CAN_HandleTypeDef hcanx);
+void CanSaveReceivedData(CAN_HandleTypeDef chosen_network, CanDataFrameInit *ptr_can_rx_frame_template);
 void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 		uint32_t receiver_id);
 

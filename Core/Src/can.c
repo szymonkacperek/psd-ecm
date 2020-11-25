@@ -245,9 +245,9 @@ void CanInit(CAN_HandleTypeDef chosen_network) {
  * @param chosen_network
  *
  **/
-void CanSaveReceivedData(CAN_HandleTypeDef chosen_network) {
-	if (HAL_CAN_GetRxMessage(&chosen_network, CAN_RX_FIFO0, &can_rx_header,
-			can_rx_data) != HAL_OK) {
+void CanSaveReceivedData(CAN_HandleTypeDef chosen_network, CanDataFrameInit *ptr_can_rx_frame_template) {
+	if (HAL_CAN_GetRxMessage(&chosen_network, CAN_RX_FIFO0, &ptr_can_rx_frame_template->rx_header,
+			ptr_can_rx_frame_template->rx_data) != HAL_OK) {
 		/* Reception Error */
 		Error_Handler();
 	}
@@ -284,7 +284,7 @@ void CanConfigFilter(CAN_HandleTypeDef chosen_network, uint8_t can_filter_bank,
 }
 
 /**
- * @brief: synchronise data from nodes with canopen sync frame
+ * @brief: synchronize data from nodes with canopen sync frame
  * @param chosen_network
  * @param ptr_can_frame_template: pointer to a structure with basic can frame parameteres
  *

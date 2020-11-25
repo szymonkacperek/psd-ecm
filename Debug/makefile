@@ -50,8 +50,8 @@ psd-ecm.bin \
 all: psd-ecm.elf secondary-outputs
 
 # Tool invocations
-psd-ecm.elf: $(OBJS) $(USER_OBJS) /home/szymon/Documents/stm32_ws/psd-ecm/STM32F407VGTX_FLASH.ld
-	arm-none-eabi-gcc -o "psd-ecm.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/szymon/Documents/stm32_ws/psd-ecm/STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="psd-ecm.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+psd-ecm.elf: $(OBJS) $(USER_OBJS) /home/szymon/stm32-ws/psd-ecm/STM32F407VGTX_FLASH.ld
+	arm-none-eabi-gcc -o "psd-ecm.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/szymon/stm32-ws/psd-ecm/STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="psd-ecm.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

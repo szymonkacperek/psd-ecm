@@ -117,9 +117,9 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     /* CAN1 interrupt Init */
     HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
-    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
-    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
   /* USER CODE BEGIN CAN1_MspInit 1 */
 
@@ -251,6 +251,7 @@ void CanSaveReceivedData(CAN_HandleTypeDef chosen_network, CanDataFrameInit *ptr
 		/* Reception Error */
 		Error_Handler();
 	}
+//	CanClearRxDataFrame(ptr_can_rx_frame_template);
 }
 
 /**
@@ -269,10 +270,14 @@ void CanConfigFilter(CAN_HandleTypeDef chosen_network, uint8_t can_filter_bank,
 	can_filter_template.FilterBank = can_filter_bank;
 	can_filter_template.FilterMode = CAN_FILTERMODE_IDMASK;
 	can_filter_template.FilterScale = CAN_FILTERSCALE_32BIT;
-	can_filter_template.FilterIdHigh = can_filter_id_high; //18FF;			//0x321 << 5;
-	can_filter_template.FilterIdLow = can_filter_id_low; //50E5;				//0x00000000;
-	can_filter_template.FilterMaskIdHigh = can_filter_mask_id_high;	//0x111 << 5;
-	can_filter_template.FilterMaskIdLow = can_filter_mask_id_low;//0x00000000;
+//	can_filter_template.FilterIdHigh = 0x290 << 5; //can_filter_id_high; //18FF;			//0x321 << 5;
+//	can_filter_template.FilterIdLow = 0x00000000; //can_filter_id_low; //50E5;				//0x00000000;
+	can_filter_template.FilterIdHigh = 0x0000;
+	can_filter_template.FilterIdLow = 0x0000;
+	can_filter_template.FilterMaskIdHigh = 0x0000;
+	can_filter_template.FilterMaskIdLow = 0x0000;
+//	can_filter_template.FilterMaskIdHigh = 0x290 << 5;	//0x111 << 5;
+//	can_filter_template.FilterMaskIdLow = 0x00000000;
 	can_filter_template.FilterFIFOAssignment = CAN_FILTER_FIFO0;
 	can_filter_template.FilterActivation = ENABLE;
 	can_filter_template.SlaveStartFilterBank = 14;
@@ -304,7 +309,7 @@ void CanSendSync(CAN_HandleTypeDef chosen_network,
 	}
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&chosen_network) != 3) {
 	}
-	CanClearDataFrame(ptr_can_frame_template);
+	CanClearTxDataFrame(ptr_can_frame_template);
 }
 
 /**
@@ -333,7 +338,7 @@ void CanSendNmt(CAN_HandleTypeDef chosen_network, uint8_t state,
 	}
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&chosen_network) != 3) {
 	}
-	CanClearDataFrame(ptr_can_frame_template);
+	CanClearTxDataFrame(ptr_can_frame_template);
 }
 
 /**
@@ -372,7 +377,7 @@ void CanSendPdo(CAN_HandleTypeDef chosen_network, uint8_t frame_pdo_id,
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&chosen_network) != 3) {
 	}
 
-	CanClearDataFrame(ptr_can_frame_template);
+	CanClearTxDataFrame(ptr_can_frame_template);
 
 }
 
@@ -412,7 +417,7 @@ void CanSendSdo(CAN_HandleTypeDef chosen_network, uint8_t frame_sdo_id,
 	while (HAL_CAN_GetTxMailboxesFreeLevel(&chosen_network) != 3) {
 	}
 
-	CanClearDataFrame(ptr_can_frame_template);
+	CanClearTxDataFrame(ptr_can_frame_template);
 
 }
 
@@ -448,7 +453,7 @@ void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
  * @param ptr_can_frame_template: chosen structure which helds all the data
  *
  **/
-void CanClearDataFrame(CanDataFrameInit *ptr_can_frame_template) {
+void CanClearTxDataFrame(CanDataFrameInit *ptr_can_frame_template) {
 	ptr_can_frame_template->tx_header.StdId = 0x00;
 	ptr_can_frame_template->tx_header.RTR = CAN_RTR_DATA;
 	ptr_can_frame_template->tx_header.IDE = CAN_ID_STD;
@@ -465,6 +470,22 @@ void CanClearDataFrame(CanDataFrameInit *ptr_can_frame_template) {
 	ptr_can_frame_template->tx_data[7] = 0x0;
 }
 
+
+void CanClearRxDataFrame(CanDataFrameInit *ptr_can_frame_template) {
+	ptr_can_frame_template->rx_header.StdId = 0x00;
+	ptr_can_frame_template->rx_header.RTR = CAN_RTR_DATA;
+	ptr_can_frame_template->rx_header.IDE = CAN_ID_STD;
+	ptr_can_frame_template->rx_header.DLC = 0;
+
+	ptr_can_frame_template->rx_data[0] = 0x0;
+	ptr_can_frame_template->rx_data[1] = 0x0;
+	ptr_can_frame_template->rx_data[2] = 0x0;
+	ptr_can_frame_template->rx_data[3] = 0x0;
+	ptr_can_frame_template->rx_data[4] = 0x0;
+	ptr_can_frame_template->rx_data[5] = 0x0;
+	ptr_can_frame_template->rx_data[6] = 0x0;
+	ptr_can_frame_template->rx_data[7] = 0x0;
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -74,7 +74,9 @@ void CanSaveReceivedData(CAN_HandleTypeDef chosen_network, CanDataFrameInit *ptr
 void CanTransfer(CAN_HandleTypeDef hcanx, uint32_t sender_id,
 		uint32_t receiver_id);
 
-void CanClearDataFrame(CanDataFrameInit *can_frame_template);
+void CanClearTxDataFrame(CanDataFrameInit *can_frame_template);
+void CanClearRxDataFrame(CanDataFrameInit *ptr_can_frame_template);
+
 
 /* canopen services */
 void CanSendSync(CAN_HandleTypeDef hcanx, CanDataFrameInit *can_frame_template);

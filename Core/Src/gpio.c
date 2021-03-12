@@ -49,10 +49,14 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, LED_D4_Pin|LED_D5_Pin|LED_D6_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, PWM1_BLACK_UPS_RELAY_Pin|PWM2_WHITE_MAIN_RELAY_Pin|PWM3_BROWN_CHARGER_RELAY_Pin|PWM4_BLUE_ENABLE_RELAYS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CAN1_RS_GPIO_Port, CAN1_RS_Pin, GPIO_PIN_RESET);
@@ -61,14 +65,10 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(CAN2_RS_GPIO_Port, CAN2_RS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PEPin PEPin PEPin PEPin
-                           PEPin PEPin PEPin PEPin
-                           PEPin PEPin PEPin PEPin
-                           PEPin PEPin PEPin */
+                           PEPin PEPin */
   GPIO_InitStruct.Pin = OPTO_INPUT2_Pin|OPTO_INPUT3_Pin|OPTO_INPUT4_Pin|OPTO_INPUT5_Pin
-                          |OPTO_INPUT6_Pin|OPTO_INPUT15_Pin|OPTO_INPUT14_Pin|OPTO_INPUT13_Pin
-                          |OPTO_INPUT12_Pin|OPTO_INPUT11_Pin|OPTO_INPUT10_Pin|OPTO_INPUT9_Pin
-                          |OPTO_INPUT8_Pin|OPTO_INPUT7_Pin|OPTO_INPUT1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+                          |OPTO_INPUT6_Pin|OPTO_INPUT1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
@@ -78,6 +78,23 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PEPin PEPin PEPin PEPin
+                           PEPin PEPin PEPin PEPin
+                           PEPin */
+  GPIO_InitStruct.Pin = OPTO_INPUT15_Pin|OPTO_INPUT14_Pin|OPTO_INPUT13_Pin|OPTO_INPUT12_Pin
+                          |OPTO_INPUT11_Pin|OPTO_INPUT10_Pin|OPTO_INPUT9_Pin|OPTO_INPUT8_Pin
+                          |OPTO_INPUT7_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PDPin PDPin PDPin PDPin */
+  GPIO_InitStruct.Pin = PWM1_BLACK_UPS_RELAY_Pin|PWM2_WHITE_MAIN_RELAY_Pin|PWM3_BROWN_CHARGER_RELAY_Pin|PWM4_BLUE_ENABLE_RELAYS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = CAN1_RS_Pin;
@@ -120,87 +137,27 @@ void MX_GPIO_Init(void)
  * @brief: store incoming lights cuff switches and send over can to lights controller
  *
  **/
-void GpioOptoInputsService() {
-	/* opto input 1 */
-	if (HAL_GPIO_ReadPin(OPTO_INPUT1_GPIO_Port, OPTO_INPUT1_Pin)
+void OptoInputsRisingFalling(input_port, input_pin, lights_id) {
+	if (HAL_GPIO_ReadPin(input_port, input_pin)
 			== GPIO_PIN_SET) {
 		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x01, 0, 0, 0, 0, 0, 0);
-	}
+				&can_frame_template, 3, SDO_UPLOAD, lights_id, 0x01, 0, 0, 0, 0, 0);
 
-	/* opto input 2 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT2_GPIO_Port, OPTO_INPUT2_Pin)
-			== GPIO_PIN_SET) {
+	} else if (HAL_GPIO_ReadPin(OPTO_INPUT1_GPIO_Port, OPTO_INPUT1_Pin)
+			== GPIO_PIN_RESET) {
 		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x02, 0, 0, 0, 0, 0, 0);
+				&can_frame_template, 3, SDO_UPLOAD, lights_id, 0x00, 0, 0, 0, 0, 0);
 	}
+}
 
-	/* opto input 3 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT3_GPIO_Port, OPTO_INPUT3_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x03, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 4 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT4_GPIO_Port, OPTO_INPUT4_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x04, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 5 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT5_GPIO_Port, OPTO_INPUT5_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x05, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 6 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT6_GPIO_Port, OPTO_INPUT6_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x06, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 7 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT7_GPIO_Port, OPTO_INPUT7_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x07, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 8 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT8_GPIO_Port, OPTO_INPUT8_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x08, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 9 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT9_GPIO_Port, OPTO_INPUT9_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x09, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 10 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT10_GPIO_Port, OPTO_INPUT10_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x0A, 0, 0, 0, 0, 0, 0);
-	}
-
-	/* opto input 11 */
-	else if (HAL_GPIO_ReadPin(OPTO_INPUT11_GPIO_Port, OPTO_INPUT11_Pin)
-			== GPIO_PIN_SET) {
-		CanSendSdo(CAN_LOW_SPEED, lights_controller.node_id,
-				&can_frame_template, 2, SDO_UPLOAD, 0x0B, 0, 0, 0, 0, 0, 0);
-	}
-
-	else {
-		HAL_GPIO_TogglePin(LED_D4_GPIO_Port, LED_D4_Pin);
-	}
+/*
+ * @brief: black UPS relay - it should be HIGH in normal condidions
+ * In error condition in order to disconnect main battery pack
+ * FIRST set black UPS relay it LOW to connect 13,5V lead acid battery into circuit
+ * and THEN set PWM2_WHITE_MAIN_RELAY to LOW
+ *
+ */
+void OutputPowerRelay(){
 
 }
 

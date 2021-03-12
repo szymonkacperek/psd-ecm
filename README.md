@@ -1,4 +1,9 @@
-# PUT SOLAR DYNAMICS
-Moduł ECM na procesorze STM32F446VET6 
+# PUT Solar Dynamics
+Electronic control module based on STM32F407VET6 microprocessor
 
-Opis modułu dostępny w pliku PUT_SD_ECM_Koncept.pdf
+## Description
+...
+
+## Schematics
+
+

@@ -119,8 +119,8 @@ int main(void)
 	CanConfigFilter(CAN_HIGH_SPEED, 1, 0x0000, 0x0000, 0x0000, 0x0000);
 	CanInit(CAN_HIGH_SPEED);
 
-//	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
-//	CanInit(CAN_LOW_SPEED);
+	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
+	CanInit(CAN_LOW_SPEED);
 
 	HAL_TIM_Base_Start_IT(&htim10);
 

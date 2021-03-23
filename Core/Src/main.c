@@ -1,23 +1,35 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : ECM Module software
-  * @author			: Szymon Kacperek
-  * @date			: 14/08/2020
-  ******************************************************************************
-  * Code created by me is signed in longer * arrays. Naming is adapted to Google C/C++ Style Guide.
-  *
-  * NOTES
-  * @ 9/09 CAN is set on different pins than on .sch. Set for test purposes.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : ECM Module software
+ * @author		   : Szymon Kacperek
+ * @mail           : szymonkacperek96@gmail.com
+ * @date		   : 14/08/2020
+ ******************************************************************************
+ * Code created by me is signed in longer * arrays. Naming is adapted to Google C++ Style Guide.
+ *
+ ******************************************************************************
+ * NOTES
+ * @ 24/11/2020 Perspectives to develop:
+ * - [x] clear every message after being sent in order to CAN data sent over USB be clear;
+ * - [ ] create a ENUM type which would return CAN peripherial state after calling CAN functions;
+ * - [ ] allocate memory dynamically in order to build usb data frames;
+ * - [ ] sent usb data in 200-elements array with specified time interval e.g. 30 or 60 Hz;
+ *
+ *
+ *
+ *
+ *
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
 #include "tim.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -25,8 +37,9 @@
 
 /************************************************************************************************
  PRIVATE INCLUDES
-************************************************************************************************/
+ ************************************************************************************************/
 #include "canopen_object_dict.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -61,7 +74,7 @@ void SystemClock_Config(void);
 
 /************************************************************************************************
  PRIVATE VARIABLES
-************************************************************************************************/
+ ************************************************************************************************/
 
 /* USER CODE END 0 */
 
@@ -96,41 +109,55 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_TIM10_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
 	/************************************************************************************************
 	 CAN PERIPHERIAL AND ITS COMPONENTS
 	 ************************************************************************************************/
 	CanopenObjectDictInit();
-	CanConfigFilter(CAN_HIGH_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
+	CanConfigFilter(CAN_HIGH_SPEED, 1, 0x0000, 0x0000, 0x0000, 0x0000);
 	CanInit(CAN_HIGH_SPEED);
+
+	CanConfigFilter(CAN_LOW_SPEED, 0, 0x0000, 0x0000, 0x0000, 0x0000);
 	CanInit(CAN_LOW_SPEED);
+
 	HAL_TIM_Base_Start_IT(&htim10);
 
 	/************************************************************************************************
 	 TURNING ON THE MODULES
 	 ************************************************************************************************/
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id);
-	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, bms.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_1.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, inverter_2.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_1.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_2.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, mppt_3.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, lights_controller.node_id,
+//			&can_frame_template);
+//	CanSendNmt(CAN_HIGH_SPEED, OPERATIONAL_STATE, dashboard.node_id,
+//			&can_frame_template);
+	/************************************************************************************************
+	 USB
+	 ************************************************************************************************/
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1) {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -155,9 +182,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
+  RCC_OscInitStruct.PLL.PLLN = 120;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV6;
+  RCC_OscInitStruct.PLL.PLLQ = 5;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -168,10 +195,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -188,7 +215,7 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+	/* User can add his own implementation to report the HAL error return state */
 
   /* USER CODE END Error_Handler_Debug */
 }

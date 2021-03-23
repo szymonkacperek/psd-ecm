@@ -12,6 +12,7 @@
 *.mk
 *.list
 *.map
+.directory
 
 # Makefile
 *~

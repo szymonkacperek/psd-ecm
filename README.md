@@ -5,9 +5,13 @@ The module is receiving data from the whole CAN network and then automatically t
 Besides CAN, the `OPTO-INPUT' pins are connected to light controlling panel with interrupt on every state change. 
 
 # To-do list
-- [ ] implement SD card service in order to store bus traffic
+- [x] run CAN network and adapt to CANopen standard
+- [x] send CAN data over USB (merged & deleted branch: `feature/usb`)
+- [ ] develop SD card service service in order to store bus traffic (branch:`feature/sd_card_service`)
 - [ ] conversion onto RTOS (optional)
 - [ ] continue developing `CANopen` functions in order to extend network management
+- [ ] finish adapting `OPTO-INPUT` ports with control panel
+- [ ] adjust `POWERSTAGE-DRIVER` ports
 
 
 # Short description
@@ -20,3 +24,5 @@ Besides CAN, the `OPTO-INPUT' pins are connected to light controlling panel with
 # Usage
 - All of the peripherial functions can be found inside appropriate source file, e.g. CAN functions can be found in `can.c` file. 
 - Currently data are being stored by `SYNC` frame sent through an interrupt. It is important to set interrupt priority.
+
+
